@@ -1,10 +1,11 @@
 import { Character, ModelProviderName, Clients } from "@elizaos/core";
-
+import { evmSecurePlugin } from "@elizaos/plugin-evm-secure";
 export const griotCharacter: Character = {
   username: "griot-assistant",
   name: "Griot",
   modelProvider: ModelProviderName.OPENAI,
   clients: [Clients.DISCORD],
+  plugins: [evmSecurePlugin],
   settings: {
     secrets: {
       OPENAI_API_KEY: process.env.OPENAI_API_KEY || "",
@@ -113,5 +114,4 @@ export const griotCharacter: Character = {
       "Use platform-appropriate formatting and terminology",
     ],
   },
-  plugins: [],
 };
