@@ -10,6 +10,22 @@ import {
 
 const ETHERSCAN_BASE_URL = "https://api.etherscan.io/api";
 
+const UNLIMITED_APPROVAL_VALUES = {
+    MAX_UINT256: "115792089237316195423570985008687907853269984665640564039457584007913129639935", // 2^256 - 1
+    MAX_UINT128: "340282366920938463463374607431768211455", // 2^128 - 1
+    MAX_UINT96:  "79228162514264337593543950335", // 2^96 - 1
+    MAX_UINT64:  "18446744073709551615", // 2^64 - 1
+    TYPE_MAX_UINT: "115792089237316195423570985008687907853269984665640564039457584007913129639935", // Same as MAX_UINT256, used by TypeScript
+};
+
+const formatAllowanceAmount = (amount: string, decimals: number): string => {
+    // Check for any unlimited approval values
+    if (Object.values(UNLIMITED_APPROVAL_VALUES).includes(amount)) {
+        return "Unlimited";
+    }
+    return utils.formatUnits(amount, decimals);
+};
+
 export const createTokenService = (config: {
     rpcUrl: string;
     etherscanApiKey: string;
@@ -93,48 +109,57 @@ export const createTokenService = (config: {
         }
 
         try {
+            // Get tokens the address has interacted with
             const tokenAddresses = await fetchTokenTransactions(address);
             const allowances: TokenAllowance[] = [];
 
-            // Process in batches to avoid rate limits
+            // Process in batches
             const batchSize = 5;
             for (let i = 0; i < tokenAddresses.length; i += batchSize) {
                 const batch = tokenAddresses.slice(i, i + batchSize);
                 const batchPromises = batch.map(async (tokenAddress) => {
+                    const contract = new Contract(tokenAddress, ERC20_ABI, provider);
                     const tokenMetadata = await getTokenMetadata(tokenAddress);
 
-                    const spenderPromises = Object.entries(KNOWN_SPENDERS).map(
-                        async ([spenderAddress, spenderInfo]: [string, SpenderInfo]) => {
-                            const amount = await checkAllowance(
-                                tokenAddress,
-                                address,
-                                spenderAddress
-                            );
+                    // Query all historical Approval events for this owner
+                    const filter = contract.filters.Approval(address, null);
+                    const events = await contract.queryFilter(filter);
 
-                            if (amount !== '0') {
-                                return {
-                                    token: tokenAddress,
-                                    spender: spenderAddress,
-                                    amount,
-                                    symbol: tokenMetadata.symbol,
-                                    name: tokenMetadata.name,
-                                    decimals: tokenMetadata.decimals
-                                };
-                            }
-                            return null;
+                    // Get the most recent approval for each spender
+                    const spenderAllowances = new Map<string, string>();
+                    for (const event of events) {
+                        const spender = event.args?.[1];
+                        // Check current allowance for this spender
+                        const currentAllowance = await checkAllowance(
+                            tokenAddress,
+                            address,
+                            spender
+                        );
+                        if (currentAllowance !== '0') {
+                            spenderAllowances.set(spender, currentAllowance);
                         }
-                    );
+                    }
 
-                    const spenderResults = await Promise.all(spenderPromises);
-                    return spenderResults.filter((result): result is NonNullable<typeof result> => 
-                        result !== null
-                    );
+                    // Convert to response format
+                    return Array.from(spenderAllowances.entries()).map(([spender, amount]) => ({
+                        token: tokenAddress,
+                        spender,
+                        amount,
+                        symbol: tokenMetadata.symbol,
+                        name: tokenMetadata.name,
+                        decimals: tokenMetadata.decimals,
+                        spenderInfo: KNOWN_SPENDERS[spender] || {
+                            name: 'Unknown Protocol',
+                            protocol: 'Unknown',
+                            risk: 'Unknown'
+                        }
+                    }));
                 });
 
                 const batchResults = await Promise.all(batchPromises);
                 allowances.push(...batchResults.flat());
 
-                // Add a small delay between batches
+                // Add delay between batches
                 if (i + batchSize < tokenAddresses.length) {
                     await new Promise(resolve => setTimeout(resolve, 1000));
                 }
@@ -161,10 +186,7 @@ export const createTokenService = (config: {
         
         allowanceData.allowances.forEach((allowance) => {
             const spenderInfo = KNOWN_SPENDERS[allowance.spender];
-            const formattedAmount = utils.formatUnits(
-                allowance.amount,
-                allowance.decimals || 18
-            );
+            const formattedAmount = formatAllowanceAmount(allowance.amount, allowance.decimals || 18);
             
             message += `${allowance.symbol || 'Token'} (${allowance.name || 'Unknown'}):\n`;
             message += `- Spender: ${spenderInfo?.name || allowance.spender}\n`;

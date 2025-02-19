@@ -100,5 +100,6 @@ export const ERC20_ABI = [
         name: 'decimals',
         outputs: [{ name: '', type: 'uint8' }],
         type: 'function'
-    }
+    },
+    'event Approval(address indexed owner, address indexed spender, uint256 value)',
 ] as const;
