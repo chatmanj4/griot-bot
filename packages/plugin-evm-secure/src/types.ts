@@ -1,8 +1,7 @@
-// types/allowance.ts
-
 export interface Config {
     rpcUrl?: string;
     etherscanApiKey?: string;
+    etherscanBaseUrl?: string;
     chainId?: number;
 }
 

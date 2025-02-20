@@ -6,7 +6,7 @@ import {
     SpenderInfo,
     ERC20_ABI,
     KNOWN_SPENDERS
-} from './types';
+} from '../types';
 
 const ETHERSCAN_BASE_URL = "https://api.etherscan.io/api";
 

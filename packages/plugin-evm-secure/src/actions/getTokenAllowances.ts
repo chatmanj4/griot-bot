@@ -9,7 +9,7 @@ import {
 } from "@elizaos/core";
 import { validateEVMSecureConfig } from "../environment";
 import { getTokenAllowanceExamples } from "../examples";
-import { createTokenService } from "../services";
+import { createTokenService } from "../services/allowanceService";
 
 export const getTokenAllowancesAction: Action = {
     name: "GET_TOKEN_ALLOWANCES",

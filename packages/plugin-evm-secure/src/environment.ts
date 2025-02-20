@@ -3,6 +3,7 @@ import { z } from "zod";
 
 export const evmSecureEnvSchema = z.object({
     RPC_URL: z.string().min(1, "RPC URL is required"),
+    RPC_API_KEY: z.string().min(1, "RPC API key is required"),
     ETHERSCAN_API_KEY: z.string().min(1, "Etherscan API key is required"),
     CHAIN_ID: z.string().transform((val) => parseInt(val, 10)).pipe(
         z.number().min(1, "Chain ID must be a positive number")
@@ -29,7 +30,8 @@ export async function validateEVMSecureConfig(
             ETHERSCAN_API_KEY: runtime.getSetting("ETHERSCAN_API_KEY"),
             CHAIN_ID: runtime.getSetting("CHAIN_ID"),
             MAX_ALLOWANCE_CHECK: runtime.getSetting("MAX_ALLOWANCE_CHECK"),
-            BLOCK_SCAN_RANGE: runtime.getSetting("BLOCK_SCAN_RANGE")
+            BLOCK_SCAN_RANGE: runtime.getSetting("BLOCK_SCAN_RANGE"),
+            RPC_API_KEY: runtime.getSetting("RPC_API_KEY")
         };
         
         console.log('EVM Secure config: ', {

@@ -170,3 +170,155 @@ export const getTokenAllowanceExamples: ActionExample[][] = [
         }
     ]
 ];
+export const checkContractSafetyExamples: ActionExample[][] = [
+    [
+        {
+            user: "{{user1}}",
+            content: {
+                text: "Is this contract safe? 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+            },
+        },
+        {
+            user: "{{agent}}",
+            content: {
+                text: "I'll analyze this contract for security concerns.",
+                action: "CHECK_CONTRACT_SAFETY",
+            },
+        }
+    ],
+    [
+        {
+            user: "{{user1}}",
+            content: {
+                text: "Can you audit 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D?",
+            },
+        },
+        {
+            user: "{{agent}}",
+            content: {
+                text: "I'll perform a security analysis of this contract.",
+                action: "CHECK_CONTRACT_SAFETY",
+            },
+        }
+    ],
+    [
+        {
+            user: "{{user1}}",
+            content: {
+                text: "Can you audit this contract 0x36A5FaBc0cAe3034E67F51147c1D8C49228880c8 on sepolia",
+            },
+        },
+        {
+            user: "{{agent}}",
+            content: {
+                text: "I'll analyze this contract's security on the Sepolia network.",
+                action: "CHECK_CONTRACT_SAFETY",
+            },
+        }
+    ],
+    [
+        {
+            user: "{{user1}}",
+            content: {
+                text: "Check if this Sepolia contract is safe: 0x36A5FaBc0cAe3034E67F51147c1D8C49228880c8",
+            },
+        },
+        {
+            user: "{{agent}}",
+            content: {
+                text: "I'll perform a security analysis of this contract on Sepolia.",
+                action: "CHECK_CONTRACT_SAFETY",
+            },
+        }
+    ],
+    [
+        {
+            user: "{{user1}}",
+            content: {
+                text: "Is this contract vulnerable? 0x36A5FaBc0cAe3034E67F51147c1D8C49228880c8 (on sepolia testnet)",
+            },
+        },
+        {
+            user: "{{agent}}",
+            content: {
+                text: "I'll check for vulnerabilities in this contract on the Sepolia testnet.",
+                action: "CHECK_CONTRACT_SAFETY",
+            },
+        }
+    ],
+    [
+        {
+            user: "{{user1}}",
+            content: {
+                text: "analyze contract security sepolia 0x36A5FaBc0cAe3034E67F51147c1D8C49228880c8",
+            },
+        },
+        {
+            user: "{{agent}}",
+            content: {
+                text: "I'll conduct a security analysis of this contract on Sepolia.",
+                action: "CHECK_CONTRACT_SAFETY",
+            },
+        }
+    ],
+    [
+        {
+            user: "{{user1}}",
+            content: {
+                text: "please check contract 0x36A5FaBc0cAe3034E67F51147c1D8C49228880c8 on the sepolia network for security issues",
+            },
+        },
+        {
+            user: "{{agent}}",
+            content: {
+                text: "I'll examine this contract on Sepolia for potential security concerns.",
+                action: "CHECK_CONTRACT_SAFETY",
+            },
+        }
+    ],
+    [
+        {
+            user: "{{user1}}",
+            content: {
+                text: "run security audit on sepolia contract 0x36A5FaBc0cAe3034E67F51147c1D8C49228880c8",
+            },
+        },
+        {
+            user: "{{agent}}",
+            content: {
+                text: "I'll run a security audit on this Sepolia contract.",
+                action: "CHECK_CONTRACT_SAFETY",
+            },
+        }
+    ],
+    [
+        {
+            user: "{{user1}}",
+            content: {
+                text: "review smart contract 0x36A5FaBc0cAe3034E67F51147c1D8C49228880c8 sepolia network",
+            },
+        },
+        {
+            user: "{{agent}}",
+            content: {
+                text: "I'll review this smart contract's security on the Sepolia network.",
+                action: "CHECK_CONTRACT_SAFETY",
+            },
+        }
+    ],
+    [
+        {
+            user: "{{user1}}",
+            content: {
+                text: "can you help me check if this sepolia contract is safe? 0x36A5FaBc0cAe3034E67F51147c1D8C49228880c8",
+            },
+        },
+        {
+            user: "{{agent}}",
+            content: {
+                text: "I'll help you check if this contract on Sepolia has any security issues.",
+                action: "CHECK_CONTRACT_SAFETY",
+            },
+        }
+    ]
+];
