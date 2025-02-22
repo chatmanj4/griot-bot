@@ -36,7 +36,10 @@ export async function validateEVMSecureConfig(
         
         console.log('EVM Secure config: ', {
             ...config,
-            RPC_URL: config.RPC_URL.slice(0, 20) + '...' // Log partial RPC URL for security
+            // Log partial for security
+            RPC_URL: config.RPC_URL.slice(0, 20) + '...',
+            ETHERSCAN_API_KEY: config.ETHERSCAN_API_KEY.slice(0, 5) + '...',
+            RPC_API_KEY: config.RPC_API_KEY.slice(0, 5) + '...',
         });
         
         return evmSecureEnvSchema.parse(config);
